@@ -2,13 +2,14 @@
 // Paste your Firebase Web App config below. databaseURL is required.
 
 window.firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDwIzffj-frpoHdXCwikjXJQUA3nfV0IH4",
+  authDomain: "juho-jeon.firebaseapp.com",
+  databaseURL: "https://juho-jeon-default-rtdb.firebaseio.com",
+  projectId: "juho-jeon",
+  storageBucket: "juho-jeon.firebasestorage.app",
+  messagingSenderId: "959274699904",
+  appId: "1:959274699904:web:2aaf467c589fe350b0ea65",
+  measurementId: "G-H91LRVJ3CB"
 };
 
 window.firebaseApp = firebase.initializeApp(window.firebaseConfig);
