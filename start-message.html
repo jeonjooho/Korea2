@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Start / Admin — Message</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#eef6ff;color:#10234a}
+.wrap{max-width:1180px;margin:0 auto;padding:28px}
+.box{background:white;border-radius:24px;padding:28px;box-shadow:0 10px 40px #8aa8c955}
+h1{margin:0;color:#0b4fd7} .note{color:#51617f}
+.section{border-top:1px solid #d9e6f8;margin-top:22px;padding-top:22px}
+.section h2{margin:0 0 4px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.full{grid-column:1/-1}
+label{display:block;font-weight:800;font-size:13px;margin-bottom:5px}
+input,select,textarea{width:100%;padding:10px;border:2px solid #c7d7ef;border-radius:10px;font-size:15px}
+textarea{min-height:72px}
+.bar{position:sticky;top:0;background:#ffffffee;z-index:5;padding:12px 0;display:flex;gap:10px;flex-wrap:wrap}
+button,a.btn{border:0;border-radius:12px;padding:12px 18px;font-weight:900;background:#0b4fd7;color:white;text-decoration:none;cursor:pointer}
+.danger{background:#d83a3a} .light{background:#e8eef8;color:#17335f}
+#entryList{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow:auto;margin-top:12px}
+.entryRow{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#f4f7fb;border-radius:12px;padding:10px 14px;font-size:13px}
+.entryRow .meta{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+body.locked main{display:none}
+#adminLock{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:#eef6ff}
+body:not(.locked) #adminLock{display:none}
+.lockBox{width:min(92vw,430px);background:white;border-radius:22px;padding:28px;box-shadow:0 16px 45px #48627a55}
+.lockBox h2{margin:0 0 12px;color:#0b4fd7}
+.lockBox input{margin:8px 0 12px}
+.lockError{color:#b91c1c;font-weight:800;min-height:22px}
+</style></head><body class="locked">
+<div id="adminLock"><div class="lockBox"><h2>관리자 비밀번호</h2><p class="note">start-message 화면에 접속하려면 비밀번호를 입력하세요.</p><input id="adminPasswordInput" type="password" placeholder="비밀번호 입력"><button id="adminPasswordSubmit" type="button">접속</button><div id="adminPasswordError" class="lockError"></div></div></div>
+<main class="wrap"><div class="box">
+<h1>메시지 방명록 관리자</h1>
+<p class="note">이 화면은 "visitorBook/..." Firebase 경로를 그대로 재사용합니다 (원본 앱과 데이터 공유). 초기 화면 / 입력 화면 / 스크린(9:16) 표시 방식을 설정합니다.</p>
+<div class="bar">
+  <button id="saveBtn">설정 저장</button>
+  <a class="btn light" href="index-message.html" target="_blank">초기 화면</a>
+  <a class="btn light" href="input-message.html" target="_blank">입력 화면</a>
+  <a class="btn light" href="screen-message.html" target="_blank">스크린 화면 (9:16)</a>
+  <button class="danger" id="clearEntriesBtn">전체 메시지 삭제</button>
+</div>
+<div id="status"></div>
+
+<section class="section"><h2>관리자 보안 설정</h2><div class="grid">
+  <div><label>관리자 접속 비밀번호</label><input data-key="adminPassword" id="adminPassword" type="text" placeholder="기본값 1234"></div>
+</div></section>
+
+<section class="section"><h2>초기 화면 설정 (index-message.html)</h2><div class="grid">
+  <div><label>제목</label><input data-key="indexTitle" type="text"></div>
+  <div><label>제목 크기</label><input data-key="indexTitleSize" type="number"></div>
+  <div><label>제목 색상</label><input data-key="indexTitleColor" type="color"></div>
+  <div class="full"><label>부제목</label><input data-key="indexSubtitle" type="text"></div>
+  <div><label>배경색</label><input data-key="indexBgColor" type="color"></div>
+  <div><label>박스 색상</label><input data-key="indexBoxColor" type="color"></div>
+  <div><label>박스 가로(px)</label><input data-key="indexBoxWidth" type="number"></div>
+</div></section>
+
+<section class="section"><h2>입력 화면 — 홈 설정</h2>
+<p class="note">입력 화면(input-message.html)은 스크린 화면과 마찬가지로 고정 비율 캔버스(1920×1080, 16:9 가로화면)를 사용하며 실제 화면 크기에 맞춰 자동으로 확대/축소됩니다. 아래 버튼 위치/크기 값은 모두 이 16:9 화면 전체 기준 %입니다.</p>
+<div class="grid">
+  <div><label>홈 제목</label><input data-key="homeTitle" type="text"></div>
+  <div><label>홈 안내문구</label><input data-key="homeHint" type="text"></div>
+  <div><label>"Leave a Message" 버튼 문구</label><input data-key="leaveButtonText" type="text"></div>
+  <div><label>버튼 색상</label><input data-key="messageButtonColor" type="color"></div>
+  <div><label>버튼 가로 위치(%)</label><input data-key="leaveButtonX" type="number"></div>
+  <div><label>버튼 세로 위치(%)</label><input data-key="leaveButtonY" type="number"></div>
+  <div><label>버튼 가로 크기(%)</label><input data-key="leaveButtonWidth" type="number"></div>
+  <div><label>버튼 세로 크기(%)</label><input data-key="leaveButtonHeight" type="number"></div>
+  <div><label>입력 화면 배경색</label><input data-key="inputBackgroundColor" type="color"></div>
+  <div class="full"><label>입력 화면 배경 이미지 URL (여러 개는 줄바꿈/쉼표로 구분, 자동 순환)</label><textarea data-key="inputBackgroundImages"></textarea></div>
+  <div><label>입력 화면 배경 전환 주기(초)</label><input data-key="inputBackgroundInterval" type="number"></div>
+  <div><label>홈 카드 가로 위치 보정(px)</label><input data-key="homeCardX" type="number"></div>
+  <div><label>홈 카드 세로 위치 보정(px)</label><input data-key="homeCardY" type="number"></div>
+  <div><label>홈 카드 너비(px)</label><input data-key="homeCardWidth" type="number"></div>
+  <div><label>홈 카드 안쪽 여백(px)</label><input data-key="homeCardPadding" type="number"></div>
+  <div><label>홈 카드 최소 높이(px)</label><input data-key="homeCardHeight" type="number"></div>
+  <div><label>홈 카드 배경색</label><input data-key="homeCardColor" type="color"></div>
+  <div><label>제목/타이틀 색상 (홈+메시지 화면 공용)</label><input data-key="titleColor" type="color"></div>
+  <div><label>홈 제목 크기(px)</label><input data-key="homeTitleSize" type="number"></div>
+  <div><label>홈 안내문구 크기(px)</label><input data-key="homeHintSize" type="number"></div>
+  <div><label>버튼 글자 크기(px)</label><input data-key="menuButtonFontSize" type="number"></div>
+</div></section>
+
+<section class="section"><h2>메시지 작성 화면 설정</h2><div class="grid">
+  <div><label>메시지 화면 제목</label><input data-key="messageScreenTitle" type="text"></div>
+  <div class="full"><label>메시지 화면 안내문구</label><input data-key="messageScreenHint" type="text"></div>
+  <div><label>메시지 화면 제목 크기(px)</label><input data-key="messageScreenTitleSize" type="number"></div>
+  <div><label>메시지 화면 안내문구 크기(px)</label><input data-key="messageScreenHintSize" type="number"></div>
+  <div><label>입력란 라벨 크기(px)</label><input data-key="labelFontSize" type="number"></div>
+  <div><label>입력란 글자 크기(px)</label><input data-key="fieldFontSize" type="number"></div>
+  <div><label>카드 배경색</label><input data-key="messageCardColor" type="color"></div>
+  <div><label>제출 버튼 색상</label><input data-key="submitButtonColor" type="color"></div>
+  <div><label>지우기 버튼 색상</label><input data-key="clearButtonColor" type="color"></div>
+  <div><label>"Home" 버튼 문구</label><input data-key="homeButtonText" type="text"></div>
+  <div><label>"Full Screen" 버튼 문구</label><input data-key="fullscreenButtonText" type="text"></div>
+  <div><label>"Clear Signature" 버튼 문구</label><input data-key="clearSigButtonText" type="text"></div>
+  <div><label>"Submit Message" 버튼 문구</label><input data-key="submitButtonText" type="text"></div>
+  <div><label>손글씨 모드 사용</label><select data-key="messageHandwritingEnabled"><option value="no">No</option><option value="yes">Yes</option></select></div>
+  <div><label>손글씨 기본 굵기(px)</label><input data-key="handwritingBrushWidth" type="number"></div>
+  <div><label>손글씨 기본 색상</label><input data-key="handwritingBrushColor" type="color"></div>
+  <div><label>손글씨 기본 펜 모양</label><select data-key="handwritingBrushShape"><option value="round">Round</option><option value="square">Square</option></select></div>
+  <div><label>손글씨 박스 너비(%)</label><input data-key="messageHandwritingBoxWidthPercent" type="number"></div>
+  <div><label>손글씨 박스 높이(%)</label><input data-key="messageHandwritingBoxHeightPercent" type="number"></div>
+  <div><label>손글씨 박스 모양</label><select data-key="messageHandwritingBoxShape"><option value="rounded">둥근 모서리</option><option value="square">각진 모서리</option><option value="pill">알약형</option><option value="none">모서리 없음</option></select></div>
+  <div><label>손글씨 박스 테두리</label><select data-key="messageHandwritingBoxBorderStyle"><option value="dashed">점선</option><option value="solid">실선</option><option value="none">없음</option></select></div>
+  <div><label>손글씨 박스 배경색</label><input data-key="messageHandwritingBoxBgColor" type="color"></div>
+  <div><label>손글씨 박스 그림자</label><select data-key="messageHandwritingBoxShadow"><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div><label>프로필 사진 QR 사용</label><select data-key="kakaoProfileQrEnabled"><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div><label>서명 박스 높이(px, 입력화면 서명란)</label><input data-key="signatureBoxHeight" type="number"></div>
+  <div><label>서명 굵기(px)</label><input data-key="signatureStrokeWidth" type="number"></div>
+  <div><label>서명란 배경색</label><input data-key="signatureBoxColor" type="color"></div>
+</div></section>
+
+<section class="section"><h2>스크린 화면 설정 (9:16)</h2>
+<p class="note">제목/부제목/메시지 목록 박스의 위치와 크기는 화면(1080×1920 캔버스) 기준 %값입니다 (0~100). 글자 크기, 배경 전환 주기, 스크롤 속도 등은 그대로 px/초 단위입니다.</p>
+<div class="grid">
+  <div class="full"><label>스크린 메인 제목</label><input data-key="screenTitle" type="text"></div>
+  <div><label>제목 글꼴</label><input data-key="screenTitleFont" type="text" placeholder="Arial"></div>
+  <div><label>제목 크기(px)</label><input data-key="screenTitleSize" type="number"></div>
+  <div><label>제목 굵기</label><select data-key="screenTitleWeight"><option value="400">보통</option><option value="700">굵게</option><option value="800">아주 굵게</option></select></div>
+  <div><label>제목 색상</label><input data-key="screenTitleColor" type="color"></div>
+  <div><label>제목 박스 가로 위치(%)</label><input data-key="screenTitleAreaX" type="number"></div>
+  <div><label>제목 박스 세로 위치(%)</label><input data-key="screenTitleAreaY" type="number"></div>
+  <div><label>제목 박스 가로 크기(%)</label><input data-key="screenTitleAreaWidth" type="number"></div>
+  <div><label>제목 박스 세로 크기(%)</label><input data-key="screenTitleAreaHeight" type="number"></div>
+  <div class="full"><label>스크린 부제목</label><input data-key="screenSubtitle" type="text"></div>
+  <div><label>부제목 글꼴</label><input data-key="screenSubtitleFont" type="text" placeholder="Arial"></div>
+  <div><label>부제목 크기(px)</label><input data-key="screenSubtitleSize" type="number"></div>
+  <div><label>부제목 굵기</label><select data-key="screenSubtitleWeight"><option value="400">보통</option><option value="700">굵게</option><option value="800">아주 굵게</option></select></div>
+  <div><label>부제목 색상</label><input data-key="screenSubtitleColor" type="color"></div>
+  <div><label>부제목 박스 가로 위치(%)</label><input data-key="screenSubtitleAreaX" type="number"></div>
+  <div><label>부제목 박스 세로 위치(%)</label><input data-key="screenSubtitleAreaY" type="number"></div>
+  <div><label>부제목 박스 가로 크기(%)</label><input data-key="screenSubtitleAreaWidth" type="number"></div>
+  <div><label>부제목 박스 세로 크기(%)</label><input data-key="screenSubtitleAreaHeight" type="number"></div>
+  <div><label>배경색</label><input data-key="screenBgColor" type="color"></div>
+  <div class="full"><label>배경 이미지 URL (여러 개, 줄바꿈/쉼표 구분, 자동 순환)</label><textarea data-key="screenBgImages"></textarea></div>
+  <div><label>배경 전환 주기(초)</label><input data-key="screenBgInterval" type="number"></div>
+  <div><label>배경 전환 페이드 시간(초)</label><input data-key="screenBgFadeDuration" type="number" step="0.1"></div>
+  <div><label>화면에 보일 메시지 수</label><input data-key="visibleEntryCount" type="number"></div>
+  <div><label>자동 스크롤</label><select data-key="scrollEnabled"><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div><label>스크롤 속도 (px/초, 1080폭 기준)</label><input data-key="scrollSpeed" type="number"></div>
+  <div><label>메시지 목록 박스 가로 위치(%)</label><input data-key="largeBoxX" type="number"></div>
+  <div><label>메시지 목록 박스 세로 위치(%)</label><input data-key="largeBoxY" type="number"></div>
+  <div><label>메시지 목록 박스 가로 크기(%)</label><input data-key="largeBoxWidth" type="number"></div>
+  <div><label>메시지 목록 박스 세로 크기(%)</label><input data-key="largeBoxHeight" type="number"></div>
+  <div><label>메시지 목록 박스 색상</label><input data-key="largeBoxColor" type="text" placeholder="rgba(255,255,255,0.62)"></div>
+  <div><label>카드(항목) 배경색</label><input data-key="entryBoxColor" type="text" placeholder="rgba(255,255,255,0.9)"></div>
+  <div><label>카드 간격(px)</label><input data-key="entryGap" type="number"></div>
+  <div><label>카드 좌우 여백(px)</label><input data-key="entryPaddingX" type="number"></div>
+  <div><label>카드 상하 여백(px)</label><input data-key="entryPaddingY" type="number"></div>
+  <div><label>이름 글꼴</label><input data-key="nameFont" type="text" placeholder="Arial"></div>
+  <div><label>이름 크기(px)</label><input data-key="nameSize" type="number"></div>
+  <div><label>이름 굵기</label><select data-key="nameWeight"><option value="400">보통</option><option value="700">굵게</option><option value="800">아주 굵게</option></select></div>
+  <div><label>이름 색상</label><input data-key="nameColor" type="color"></div>
+  <div><label>소속 글꼴</label><input data-key="orgFont" type="text" placeholder="Arial"></div>
+  <div><label>소속 크기(px)</label><input data-key="orgSize" type="number"></div>
+  <div><label>소속 굵기</label><select data-key="orgWeight"><option value="400">보통</option><option value="700">굵게</option><option value="800">아주 굵게</option></select></div>
+  <div><label>소속 색상</label><input data-key="orgColor" type="color"></div>
+  <div><label>메시지 글꼴</label><input data-key="messageFont" type="text" placeholder="Arial"></div>
+  <div><label>메시지 크기(px)</label><input data-key="messageSize" type="number"></div>
+  <div><label>메시지 굵기</label><select data-key="messageWeight"><option value="400">보통</option><option value="700">굵게</option><option value="800">아주 굵게</option></select></div>
+  <div><label>메시지 색상 모드</label><select data-key="messageColorMode"><option value="fixed">고정색</option><option value="random">랜덤 팔레트</option></select></div>
+  <div><label>메시지 고정 색상</label><input data-key="messageFixedColor" type="color"></div>
+  <div class="full"><label>메시지 랜덤 팔레트 (쉼표 구분 hex)</label><input data-key="messageRandomPalette" type="text"></div>
+  <div><label>서명 박스 가로 위치(%, 해당 방명록 카드 안 기준)</label><input data-key="screenSignatureBoxX" type="number"></div>
+  <div><label>서명 박스 세로 위치(%, 카드 안 기준)</label><input data-key="screenSignatureBoxY" type="number"></div>
+  <div><label>서명 박스 가로 크기(%, 카드 안 기준)</label><input data-key="screenSignatureBoxWidth" type="number"></div>
+  <div><label>서명 박스 세로 크기(%, 카드 안 기준)</label><input data-key="screenSignatureBoxHeight" type="number"></div>
+  <div><label>부스셀카 영역 사용</label><select data-key="boothSelfieAreaEnabled"><option value="yes">Yes</option><option value="no">No</option></select></div>
+  <div><label>부스셀카 영역 X(px)</label><input data-key="boothSelfieAreaX" type="number"></div>
+  <div><label>부스셀카 영역 Y(px)</label><input data-key="boothSelfieAreaY" type="number"></div>
+  <div><label>부스셀카 영역 너비(px)</label><input data-key="boothSelfieAreaWidth" type="number"></div>
+  <div><label>부스셀카 영역 높이(px)</label><input data-key="boothSelfieAreaHeight" type="number"></div>
+  <div><label>부스셀카 표시 개수</label><input data-key="boothSelfieVisibleCount" type="number"></div>
+  <div><label>부스셀카 스크롤 속도(px/초)</label><input data-key="boothSelfieScrollSpeed" type="number"></div>
+  <div><label>부스셀카 사진 너비(px)</label><input data-key="boothSelfiePhotoWidth" type="number"></div>
+  <div><label>부스셀카 사진 높이(px)</label><input data-key="boothSelfiePhotoHeight" type="number"></div>
+</div></section>
+
+<section class="section"><h2>등록 메시지 관리</h2>
+  <div id="entryList"></div>
+</section>
+
+</div></main>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="firebase-config-message.js"></script>
+<script>
+if(typeof db==='undefined'){document.body.insertAdjacentHTML('afterbegin','<div style="position:fixed;inset:0;z-index:9999;background:white;color:#b91c1c;padding:30px;font:20px Arial">Firebase is not initialized. Please check firebase-config-message.js.</div>'); throw new Error('Firebase db is not defined');}
+const settingsRef=db.ref('visitorBook/settings');
+const entriesRef=db.ref('visitorBook/entries');
+let currentSettings={};
+
+function status(msg,ok){const d=document.getElementById('status'); d.style.color=ok?'#11803a':'#b91c1c'; d.textContent=msg;}
+
+function fillForm(s){
+  currentSettings=s||{};
+  document.querySelectorAll('[data-key]').forEach(elm=>{
+    const key=elm.getAttribute('data-key');
+    const v=currentSettings[key];
+    if(v!==undefined && v!==null) elm.value=v;
+  });
+}
+function collectForm(){
+  const out={...currentSettings};
+  document.querySelectorAll('[data-key]').forEach(elm=>{
+    const key=elm.getAttribute('data-key');
+    out[key]=elm.value;
+  });
+  return out;
+}
+settingsRef.on('value',snap=>{ fillForm(snap.val()||{}); checkLock(); });
+
+document.getElementById('saveBtn').onclick=async()=>{
+  try{
+    const data=collectForm();
+    await settingsRef.set(data);
+    status('설정이 저장되었습니다.',true);
+  }catch(e){status('저장 오류: '+(e&&e.message?e.message:e),false);}
+};
+document.getElementById('clearEntriesBtn').onclick=async()=>{
+  if(!confirm('모든 메시지를 삭제하시겠습니까? 되돌릴 수 없습니다.'))return;
+  await entriesRef.remove();
+  status('모든 메시지를 삭제했습니다.',true);
+};
+
+function renderEntryList(entries){
+  const wrap=document.getElementById('entryList');
+  const keys=Object.keys(entries||{}).sort((a,b)=>(entries[b].createdAt||0)-(entries[a].createdAt||0));
+  if(!keys.length){wrap.innerHTML='<div class="note">아직 등록된 메시지가 없습니다.</div>';return;}
+  wrap.innerHTML=keys.map(k=>{
+    const e=entries[k];
+    const preview=(e.message||(e.messageMode==='handwriting'?'(손글씨 메시지)':'')).slice(0,40);
+    return `<div class="entryRow"><div class="meta"><b>${(e.name||'').replace(/</g,'&lt;')}</b> (${(e.organization||'').replace(/</g,'&lt;')}) — ${preview.replace(/</g,'&lt;')}</div><button class="light" data-del="${k}">삭제</button></div>`;
+  }).join('');
+  wrap.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.onclick=async()=>{ await entriesRef.child(btn.getAttribute('data-del')).remove(); };
+  });
+}
+entriesRef.on('value',snap=>renderEntryList(snap.val()||{}));
+
+function checkLock(){
+  if(sessionStorage.getItem('visitorBookAdminUnlocked')==='yes'){ document.body.classList.remove('locked'); return; }
+}
+document.getElementById('adminPasswordSubmit').onclick=()=>{
+  const pw=document.getElementById('adminPasswordInput').value;
+  const saved=String(currentSettings.adminPassword||'1234');
+  if(pw===saved){ sessionStorage.setItem('visitorBookAdminUnlocked','yes'); document.body.classList.remove('locked'); }
+  else{ document.getElementById('adminPasswordError').textContent='비밀번호가 맞지 않습니다.'; }
+};
+</script>
+</body></html>
