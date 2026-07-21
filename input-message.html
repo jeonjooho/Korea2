@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>Leave a Message</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;min-height:100%;font-family:Arial,sans-serif;background:#000;color:var(--input-text,#122044)}body{overflow:hidden;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+#kioskStage{position:fixed;inset:0;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+#kioskContent{position:relative;width:1920px;height:1080px;transform-origin:center center;flex:none;background:linear-gradient(135deg,var(--input-bg,#eaf4ff),#ffffff)}
+.wrap{max-width:980px;margin:0 auto;padding:28px}.topbar{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.messageTitle{font-size:var(--message-title-size,38px);color:var(--title-color,#0b4fd7);margin:0 0 8px}.card{background:var(--message-card,#fff);border-radius:22px;padding:24px;box-shadow:0 8px 30px #7692b344;margin-top:18px}.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}label{display:block;font-weight:700;margin:14px 0 8px;font-size:var(--label-size,16px)}input,textarea{width:100%;font-size:var(--field-size,20px);padding:14px;border:2px solid #c7d7ef;border-radius:14px}textarea{height:110px;resize:vertical}.profileImageBlock{display:none;margin:12px 0 8px;padding:14px;border:2px solid #c7d7ef;border-radius:16px;background:#f8fbff}.profileQrEnabled .profileImageBlock{display:block}.profileImageRow{display:flex;gap:14px;align-items:center;flex-wrap:wrap}.profilePreview{width:72px;height:72px;border-radius:50%;background:#e5e7eb;display:grid;place-items:center;overflow:hidden;font-weight:900;color:#555}.profilePreview img{width:100%;height:100%;object-fit:cover}.profileHelp{font-size:13px;color:#51617f;line-height:1.45;margin-top:6px}.profileQrImg{width:150px;height:150px;border-radius:12px;background:#fff;box-shadow:0 4px 14px rgba(20,40,80,.15)}.profileUploadStatus{font-size:13px;color:#11803a;font-weight:800;margin-top:6px}.profileUploadScreen{display:none;position:fixed;inset:0;z-index:200;background:linear-gradient(135deg,#eef6ff,#fff);overflow:auto;padding:24px}.profileUploadCard{max-width:560px;margin:5vh auto;background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 44px #7692b344;text-align:center}.profileUploadPreview{width:140px;height:140px;border-radius:50%;background:#e5e7eb;margin:16px auto;display:grid;place-items:center;overflow:hidden;font-weight:900;color:#555}.profileUploadPreview img{width:100%;height:100%;object-fit:cover}.profileUploadCard input[type=file]{display:none}.profileUploadActions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}.profileChoiceBtn{background:#17335f;color:#fff}.profileGalleryBtn{background:#0b4fd7;color:#fff}.sigbox{border:2px dashed #8cb0dd;border-radius:18px;background:var(--sig-bg,#fff);height:var(--sig-height,320px);touch-action:none;position:relative}.messageWriteBox{display:none;border:var(--message-write-border,2px dashed #8cb0dd);border-radius:var(--message-write-radius,18px);background:var(--message-write-bg,#fff);box-shadow:var(--message-write-shadow,none);height:var(--message-write-height,72dvh);width:var(--message-write-width,86vw);margin:0 auto;touch-action:none;position:relative}.handwritingMode #message{display:none}.handwritingMode .messageWriteBox{display:block}.handwritingHelp{display:none;color:#51617f;font-size:14px;margin-top:8px}.handwritingMode .handwritingHelp{display:block}.handwritingMode .row,.handwritingMode label[for="message"],.handwritingMode .sigbox,.handwritingMode .card>label:not([for="message"]){display:none}.handwritingMode .wrap{max-width:calc(var(--message-write-width,86vw) + 80px)}.handwritingMode .card{padding:18px}.handwritingMode .messageWriteBox{display:block;height:var(--message-write-height,72dvh);width:var(--message-write-width,86vw)}.handwritingMode .messageTitle,.handwritingMode .hint{display:none}.handwritingMode .profileImageBlock{display:none!important}canvas{width:100%;height:100%;display:block}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:18px}.brushTools{display:none;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;padding:12px;border-radius:14px;background:#f4f7fb}.handwritingMode .brushTools{display:flex}.brushTools label{margin:0;font-size:13px}.brushTools input[type="range"]{width:130px}.brushTools select,.brushTools input{width:auto;padding:8px;border-radius:10px}button{border:0;border-radius:14px;padding:16px 24px;font-size:18px;font-weight:800;cursor:pointer}.submit{background:var(--submit-bg,#0b4fd7);color:white}.clear{background:var(--clear-bg,#e8eef8);color:#17335f}.fullscreen{background:#17335f;color:white;white-space:nowrap}.hint{color:#51617f;line-height:1.5;font-size:var(--message-hint-size,16px)}.ok{display:none;margin-top:12px;color:#11803a;font-weight:800}.screen{display:none;position:absolute;inset:0;width:100%;height:100%;overflow:auto;background:linear-gradient(135deg,var(--input-bg,#eaf4ff),#ffffff)}.screen.active{display:block}.home{display:none;place-items:center;padding:28px}.home.active{display:grid}.homeCard{width:min(90%,var(--home-card-width,720px));background:var(--home-card,#fff);border-radius:28px;padding:var(--home-card-padding,42px);transform:translate(var(--home-card-x,0px),var(--home-card-y,0px));box-shadow:0 12px 44px #7692b344;text-align:center}.homeTitle{font-size:var(--home-title-size,44px);line-height:1.1;margin:0 0 12px;color:var(--title-color,#0b4fd7)}.homeHint{font-size:var(--home-hint-size,20px);color:#51617f;margin:0 0 30px}.homeFull{position:absolute;right:22px;bottom:22px;z-index:50;box-shadow:0 8px 22px rgba(20,40,80,.25);display:none}.home.active .homeFull{display:block}.menuBtn{position:absolute;display:grid;place-items:center;padding:8px 12px;font-size:var(--menu-button-size,28px);border-radius:22px;box-shadow:0 8px 22px rgba(20,60,130,.18)}.messageBtn{background:var(--message-btn,#0b4fd7);color:white}.back{background:#e8eef8;color:#17335f}.topActions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.homeSmall{background:#e8eef8;color:#17335f;white-space:nowrap}@media(max-width:720px){.row{grid-template-columns:1fr}.topbar{display:block}.fullscreen{margin-top:10px}.topActions{margin-top:10px;flex-wrap:wrap}}
+.selfieUploadScreen{display:none;position:fixed;inset:0;z-index:220;background:linear-gradient(135deg,#eef6ff,#fff);overflow:auto;padding:24px}.selfieUploadCard{max-width:560px;margin:5vh auto;background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 44px #7692b344;text-align:center}.selfieUploadPreview{width:220px;height:160px;border-radius:18px;background:#e5e7eb;margin:16px auto;display:grid;place-items:center;overflow:hidden;font-weight:900;color:#555}.selfieUploadPreview img{width:100%;height:100%;object-fit:cover}.selfieUploadCard input[type=file]{display:none}.selfieUploadActions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:12px}.selfieChoiceBtn{background:#17335f;color:#fff}.selfieGalleryBtn{background:#0b4fd7;color:#fff}.selfieUploadStatus{font-size:14px;color:#11803a;font-weight:800;margin-top:12px;line-height:1.45}</style></head><body>
+<div id="kioskStage">
+<div id="kioskContent">
+<section id="homeScreen" class="screen active home"><button class="fullscreen homeFull" id="homeFullscreen" type="button">Full Screen</button><div class="homeCard"><h1 class="homeTitle" id="homeTitleText">Digital Visitor's Book</h1><p class="homeHint" id="homeHintText">Please leave your name, organization, signature, and message.</p></div><button class="menuBtn messageBtn" id="goMessage" type="button">Leave a Message</button></section>
+<section id="messageScreen" class="screen"><div class="wrap"><div class="topbar"><div><h1 class="messageTitle" id="messageScreenTitleText">Digital Visitor's Book</h1><p class="hint" id="messageScreenHintText">Please leave your name, organization, signature, and message.</p></div><div class="topActions"><button class="homeSmall" id="backHome1" type="button">Home</button><button class="fullscreen" id="fullscreen" type="button">Full Screen</button></div></div><div class="card"><div class="row"><div><label for="name">Name</label><input id="name" autocomplete="name" placeholder="Enter your name"></div><div><label for="organization">Organization / Affiliation</label><input id="organization" autocomplete="organization" placeholder="Enter your organization or affiliation"></div></div><label for="message">Message</label><textarea id="message" placeholder="Write your message here"></textarea><div class="handwritingHelp">Write your message in the box below with an S Pen or your finger.</div><div class="messageWriteBox"><canvas id="messageCanvas"></canvas></div><label>Signature</label><div class="sigbox"><canvas id="canvas"></canvas></div><div class="profileImageBlock" id="profileImageBlock"><label>Profile image</label><div class="profileImageRow"><div class="profilePreview" id="profilePreview">IMG</div><img class="profileQrImg" id="profileQrImg" alt="Profile upload QR code"><div style="flex:1;min-width:220px"><div class="profileHelp">Scan this QR code with a phone, take a photo or choose one from the gallery, then submit this message. The photo will become this entry's profile image.</div><div class="profileUploadStatus" id="profileUploadStatus">Waiting for profile image...</div></div></div></div><div class="actions"><button class="clear" id="clearSig">Clear Signature</button><button class="submit" id="submit">Submit Message</button><div class="brushTools" id="brushTools"><label>Brush thickness <input id="brushWidth" type="range" min="1" max="40" value="4"></label><span id="brushWidthValue">4 px</span><label>Brush color <input id="brushColor" type="color" value="#0c1d3d"></label><label>Brush shape <select id="brushShape"><option value="round">Round</option><option value="square">Square</option></select></label></div></div><div class="ok" id="ok">Thank you. Your message has been submitted.</div><div id="debugStatus" style="margin-top:10px;color:#b91c1c;font-weight:800;line-height:1.4"></div></div></div></section>
+</div>
+</div>
+<section id="profileUploadScreen" class="profileUploadScreen"><div class="profileUploadCard"><h1>Upload Profile Image</h1><p>Take a new photo or choose one from your gallery. This image will appear as the profile image for the visitor message.</p><div class="profileUploadPreview" id="phoneProfilePreview">IMG</div><input id="phoneCameraFile" type="file" accept="image/*" capture="environment"><input id="phoneGalleryFile" type="file" accept="image/*"><div class="profileUploadActions"><button id="phoneTakePhotoBtn" class="profileChoiceBtn" type="button">Take Photo</button><button id="phoneChooseGalleryBtn" class="profileGalleryBtn" type="button">Choose from Gallery</button></div><button id="phoneProfileUploadBtn" type="button">Upload Profile Image</button><div id="phoneProfileStatus" class="profileUploadStatus"></div></div></section>
+
+<section id="boothSelfieUploadScreen" class="selfieUploadScreen"><div class="selfieUploadCard"><h1>Upload Booth Selfie</h1><p>Take a new photo or choose one from your gallery. The photo will appear on the screen.</p><div class="selfieUploadPreview" id="boothSelfiePreview">PHOTO</div><input id="boothSelfieCameraFile" type="file" accept="image/*" capture="environment"><input id="boothSelfieGalleryFile" type="file" accept="image/*"><div class="selfieUploadActions"><button id="boothSelfieTakePhotoBtn" class="selfieChoiceBtn" type="button">Take Photo</button><button id="boothSelfieChooseGalleryBtn" class="selfieGalleryBtn" type="button">Choose from Gallery</button></div><button id="boothSelfieUploadBtn" type="button">Upload Photo</button><div id="boothSelfieStatus" class="selfieUploadStatus"></div></div></section>
+<script>
+/* Fits the fixed 1920x1080 (16:9) kiosk canvas to the actual viewport, scaling
+   it down/up as needed (letterboxed), independent of Firebase so the layout
+   always works even before/without a database connection. */
+(function(){
+  function fitKioskStage(){
+    const stage=document.getElementById('kioskStage');
+    const content=document.getElementById('kioskContent');
+    if(!stage||!content)return;
+    const scale=Math.min(stage.clientWidth/1920, stage.clientHeight/1080);
+    content.style.transform='scale('+(scale>0?scale:1)+')';
+  }
+  window.addEventListener('resize',fitKioskStage);
+  window.addEventListener('orientationchange',fitKioskStage);
+  if(window.ResizeObserver){
+    document.addEventListener('DOMContentLoaded',()=>{
+      const stage=document.getElementById('kioskStage');
+      if(stage) new ResizeObserver(fitKioskStage).observe(stage);
+    });
+  }
+  fitKioskStage();
+  document.addEventListener('DOMContentLoaded',fitKioskStage);
+  window.fitKioskStage=fitKioskStage;
+})();
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+<script src="firebase-config-message.js"></script>
+<script>
+/* Message-only input screen. Reuses the ORIGINAL "visitorBook/..." Firebase
+   path (entries, settings, profileUploads, boothSelfies) so any messages
+   already collected by the original app keep working here unchanged. */
+(function(){
+  const DEFAULT_SETTINGS={"adminPassword": "1234", "handwritingBrushWidth": 4, "handwritingBrushColor": "#0c1d3d", "handwritingBrushShape": "round",homeTitle:"Digital Visitor\'s Book",homeHint:'Please leave your name, organization, signature, and message.',homeTitleSize:'44',homeHintSize:'20',homeCardColor:'#ffffff',homeCardX:'0',homeCardY:'0',homeCardWidth:'720',homeCardPadding:'42',inputBackgroundColor:'#eaf4ff',inputBackgroundImages:'',inputBackgroundInterval:'10',leaveButtonX:'35',leaveButtonY:'78',leaveButtonWidth:'30',leaveButtonHeight:'14',inputTextColor:'#122044',leaveButtonText:'Leave a Message',menuButtonFontSize:'28',messageButtonColor:'#0b4fd7',messageScreenTitle:"Digital Visitor\'s Book",messageScreenHint:'Please leave your name, organization, signature, and message.',messageScreenTitleSize:'38',messageScreenHintSize:'16',messageCardColor:'#ffffff',labelFontSize:'16',fieldFontSize:'20',signatureBoxColor:'#ffffff',submitButtonColor:'#0b4fd7',clearButtonColor:'#e8eef8',titleColor:'#0b4fd7',messageHandwritingEnabled:'no',messageHandwritingBoxHeight:'620',messageHandwritingBoxWidth:'900',messageHandwritingBoxHeightPercent:'72',messageHandwritingBoxWidthPercent:'86',messageHandwritingBoxShape:'rounded',messageHandwritingBoxBgColor:'#ffffff',messageHandwritingBoxBgImage:'',messageHandwritingBoxBorderRadius:'22',messageHandwritingBoxBorderStyle:'dashed',messageHandwritingBoxShadow:'yes',kakaoProfileQrEnabled:'yes',boothSelfieQrEnabled:'yes',signatureBoxHeight:'320',signatureStrokeWidth:'6'};
+  function E(id){return document.getElementById(id);}
+  function status(msg, ok){const d=E('debugStatus'); if(d){d.style.color=ok?'#11803a':'#b91c1c'; d.textContent=msg;} console.log(msg);}
+  function requireFirebase(){
+    if(typeof firebase==='undefined'){status('Firebase SDK is not loaded. Check the gstatic script lines.',false); return null;}
+    if(!window.db){status('Firebase is not initialized. Check firebase-config-message.js and make sure databaseURL is included.',false); return null;}
+    return window.db;
+  }
+  const database=requireFirebase();
+  if(!database){return;}
+  const entriesRef=database.ref('visitorBook/entries');
+  const settingsRef=database.ref('visitorBook/settings');
+  const profileUploadsRef=database.ref('visitorBook/profileUploads');
+  const boothSelfiesRef=database.ref('visitorBook/boothSelfies');
+  let inputBgTimer=null, inputBgIndex=0;
+
+  function splitImageUrls(value){return String(value||'').split(/\n|,/).map(x=>x.trim()).filter(Boolean);}
+  function safeCssUrl(url){url=String(url||'').trim();return url?'url(\"'+url.replace(/\"/g,'%22')+'\")':'none';}
+  function bgStyle(color,image){image=String(image||'').trim();return image?((color||'')+' '+safeCssUrl(image)+' center/cover no-repeat'):(color||'');}
+  function normalizeSettings(raw){
+    const s={...DEFAULT_SETTINGS,...(raw||{})};
+    s.homeTitle=s.inputHomeTitle||s.homeTitle;
+    s.homeHint=s.inputHomeHint||s.homeHint;
+    s.homeCardColor=s.inputHomeBoxColor||s.homeCardColor;
+    s.homeCardImage=s.inputHomeBoxImage||s.homeCardImage||'';
+    s.homeCardX=s.inputHomeBoxX ?? s.homeCardX;
+    s.homeCardY=s.inputHomeBoxY ?? s.homeCardY;
+    s.homeCardWidth=s.inputHomeBoxWidth ?? s.homeCardWidth;
+    s.homeCardHeight=s.inputHomeBoxHeight ?? s.homeCardHeight;
+    s.homeCardPadding=s.inputHomeBoxPadding ?? s.homeCardPadding;
+    s.inputBackgroundColor=s.inputBgColor||s.inputBackgroundColor;
+    s.inputBackgroundImages=s.inputBgImages||s.inputBgImage||s.inputBackgroundImages;
+    s.inputBackgroundInterval=s.inputBgInterval||s.inputBackgroundInterval;
+    s.leaveButtonText=s.leaveBtnText||s.leaveButtonText;
+    s.menuButtonFontSize=s.leaveBtnFontSize||s.menuButtonFontSize;
+    s.messageButtonColor=s.leaveBtnColor||s.messageButtonColor;
+    s.leaveButtonX=s.leaveBtnX ?? s.leaveButtonX; s.leaveButtonY=s.leaveBtnY ?? s.leaveButtonY; s.leaveButtonWidth=s.leaveBtnWidth ?? s.leaveButtonWidth; s.leaveButtonHeight=s.leaveBtnHeight ?? s.leaveButtonHeight;
+    s.messageScreenTitle=s.messageTitle||s.messageScreenTitle;
+    s.messageScreenHint=s.messageHint||s.messageScreenHint;
+    s.messageCardColor=s.messageFormBoxColor||s.messageCardColor;
+    s.messageCardImage=s.messageFormBoxImage||s.messageCardImage||'';
+    s.submitButtonColor=s.submitBtnColor||s.submitButtonColor;
+    s.clearButtonColor=s.clearSigBtnColor||s.clearButtonColor;
+    return s;
+  }
+  function setInputBackground(s){
+    const screens=document.querySelectorAll('.screen');
+    const urls=splitImageUrls(s.inputBackgroundImages);
+    if(inputBgTimer){clearInterval(inputBgTimer);inputBgTimer=null;}
+    function applyOne(url){
+      const base=url?`linear-gradient(rgba(255,255,255,.12),rgba(255,255,255,.12)), url("${url.replace(/"/g,'%22')}") center/cover no-repeat`:'';
+      document.body.style.background=base||`linear-gradient(135deg,${s.inputBackgroundColor||'#eaf4ff'},#ffffff)`;
+      screens.forEach(el=>{el.style.background=base||`linear-gradient(135deg,${s.inputBackgroundColor||'#eaf4ff'},#ffffff)`;});
+    }
+    if(urls.length){
+      inputBgIndex=inputBgIndex%urls.length;
+      applyOne(urls[inputBgIndex]);
+      if(urls.length>1){inputBgTimer=setInterval(()=>{inputBgIndex=(inputBgIndex+1)%urls.length;applyOne(urls[inputBgIndex]);},Math.max(1,Number(s.inputBackgroundInterval||10))*1000);}
+    }else applyOne('');
+  }
+  function setHomeButtonLayout(s){
+    const el=E('goMessage');
+    if(!el)return;
+    // leaveButtonX/Y/Width/Height are all percent of the full home screen (the 1920x1080 kiosk canvas)
+    const xPct=Number(s.leaveButtonX);
+    const yPct=Number(s.leaveButtonY);
+    const wPct=Number(s.leaveButtonWidth);
+    const hPct=Number(s.leaveButtonHeight);
+    el.style.left=(Number.isFinite(xPct)?xPct:35)+'%';
+    el.style.top=(Number.isFinite(yPct)?yPct:78)+'%';
+    el.style.width=(Number.isFinite(wPct)?wPct:30)+'%';
+    el.style.height=(Number.isFinite(hPct)?hPct:14)+'%';
+  }
+
+  function enforceEnglishInputUi(){
+    const staticTexts={homeFullscreen:'Full Screen',fullscreen:'Full Screen',backHome1:'Home',clearSig:'Clear Signature',submit:'Submit Message'};
+    Object.keys(staticTexts).forEach(id=>{const el=E(id); if(el) el.textContent=staticTexts[id];});
+    const labels=[['label[for="name"]','Name'],['label[for="organization"]','Organization / Affiliation'],['label[for="message"]','Message']];
+    labels.forEach(([q,t])=>{const el=document.querySelector(q); if(el) el.textContent=t;});
+    const nameInput=E('name'), orgInput=E('organization'), msgInput=E('message');
+    if(nameInput) nameInput.placeholder='Enter your name';
+    if(orgInput) orgInput.placeholder='Enter your organization or affiliation';
+    if(msgInput) msgInput.placeholder='Write your message here';
+    const help=document.querySelector('.handwritingHelp');
+    if(help) help.textContent='Write your message in the box below with an S Pen or your finger.';
+    const ok=E('ok');
+    if(ok) ok.textContent='Thank you. Your message has been submitted.';
+  }
+
+  function applySettings(s){
+    s=normalizeSettings(s); const r=document.documentElement.style;
+    r.setProperty('--title-color',s.titleColor); r.setProperty('--input-bg',s.inputBackgroundColor); r.setProperty('--input-text',s.inputTextColor); r.setProperty('--home-card',s.homeCardColor); r.setProperty('--home-card-x',(s.homeCardX||0)+'px'); r.setProperty('--home-card-y',(s.homeCardY||0)+'px'); r.setProperty('--home-card-width',(s.homeCardWidth||720)+'px'); r.setProperty('--home-card-padding',(s.homeCardPadding||42)+'px'); r.setProperty('--home-title-size',s.homeTitleSize+'px'); r.setProperty('--home-hint-size',s.homeHintSize+'px'); r.setProperty('--menu-button-size',s.menuButtonFontSize+'px'); r.setProperty('--message-btn',s.messageButtonColor); r.setProperty('--message-card',s.messageCardColor); r.setProperty('--message-title-size',s.messageScreenTitleSize+'px'); r.setProperty('--message-hint-size',s.messageScreenHintSize+'px'); r.setProperty('--label-size',s.labelFontSize+'px'); r.setProperty('--field-size',s.fieldFontSize+'px'); r.setProperty('--sig-bg',s.signatureBoxColor); r.setProperty('--sig-height',(s.signatureBoxHeight||320)+'px'); r.setProperty('--submit-bg',s.submitButtonColor); r.setProperty('--clear-bg',s.clearButtonColor); const hwH=Math.max(10,Math.min(100,Number(s.messageHandwritingBoxHeightPercent||72))); const hwW=Math.max(10,Math.min(100,Number(s.messageHandwritingBoxWidthPercent||86))); const hwRadius=(s.messageHandwritingBoxShape==='square'?0:(s.messageHandwritingBoxShape==='pill'?999:Number(s.messageHandwritingBoxBorderRadius||22))); const hwBorder=s.messageHandwritingBoxShape==='none'||s.messageHandwritingBoxBorderStyle==='none'?'0':('2px '+(s.messageHandwritingBoxBorderStyle||'dashed')+' #8cb0dd'); const hwShadow=s.messageHandwritingBoxShadow==='no'?'none':'0 10px 28px rgba(20,40,80,.18)'; r.setProperty('--message-write-height',hwH+'dvh'); r.setProperty('--message-write-width',hwW+'vw'); r.setProperty('--message-write-radius',hwRadius+'px'); r.setProperty('--message-write-border',hwBorder); r.setProperty('--message-write-shadow',hwShadow); r.setProperty('--message-write-bg',bgStyle(s.messageHandwritingBoxBgColor||'#ffffff',s.messageHandwritingBoxBgImage||'')); document.body.classList.toggle('handwritingMode',String(s.messageHandwritingEnabled||'no')==='yes'); document.body.classList.toggle('profileQrEnabled',String(s.kakaoProfileQrEnabled||'yes')==='yes');
+    setupProfileQrSession(s);
+    setInputBackground(s);setHomeButtonLayout(s);
+    const homeCard=document.querySelector('.homeCard'); if(homeCard){homeCard.style.background=bgStyle(s.homeCardColor,s.homeCardImage); if(s.homeCardHeight)homeCard.style.minHeight=Number(s.homeCardHeight)+'px';}
+    const card=document.querySelector('.card'); if(card)card.style.background=bgStyle(s.messageCardColor,s.messageCardImage);
+    const goMsg=E('goMessage'); if(goMsg){goMsg.style.background=bgStyle(s.messageButtonColor||'','')||s.messageButtonColor; goMsg.style.color='#fff'; goMsg.style.fontFamily='Arial'; goMsg.style.fontSize=(s.menuButtonFontSize||28)+'px';}
+    E('clearSig').textContent=s.clearSigButtonText||'Clear Signature'; E('submit').textContent=s.submitButtonText||'Submit Message'; E('backHome1').textContent=s.homeButtonText||'Home';
+    E('homeFullscreen').textContent=s.fullscreenButtonText||'Full Screen'; E('fullscreen').textContent=s.fullscreenButtonText||'Full Screen';
+    E('homeTitleText').textContent=s.homeTitle; E('homeHintText').textContent=s.homeHint; E('goMessage').textContent=s.leaveButtonText; E('messageScreenTitleText').textContent=s.messageScreenTitle; E('messageScreenHintText').textContent=s.messageScreenHint;
+
+    enforceEnglishInputUi();
+    currentBrushWidth=Math.max(1,Math.min(40,Number(s.handwritingBrushWidth||4))); currentBrushColor=s.handwritingBrushColor||'#0c1d3d'; currentBrushShape=s.handwritingBrushShape||'round'; currentSigStrokeWidth=Math.max(1,Math.min(20,Number(s.signatureStrokeWidth||6))); updateBrushTool(); window.currentSettings=s; setTimeout(resize,80);
+  }
+
+  function updateBrushTool(){
+    const w=E('brushWidth'), c=E('brushColor'), sh=E('brushShape'), val=E('brushWidthValue');
+    if(w){w.value=currentBrushWidth; w.oninput=()=>{currentBrushWidth=Number(w.value)||4; if(val)val.textContent=currentBrushWidth+' px';};}
+    if(val)val.textContent=currentBrushWidth+' px';
+    if(c){c.value=currentBrushColor; c.oninput=()=>{currentBrushColor=c.value||'#0c1d3d';};}
+    if(sh){sh.value=currentBrushShape; sh.onchange=()=>{currentBrushShape=sh.value==='square'?'square':'round';};}
+  }
+  settingsRef.on('value',snap=>{ if(snap.exists()) applySettings(snap.val()); else applySettings(DEFAULT_SETTINGS); },err=>status('Firebase settings read error: '+err.message,false));
+
+  function showScreen(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active')); E(id).classList.add('active'); if(id==='messageScreen')setTimeout(resize,100);}
+  E('goMessage').onclick=()=>{showScreen('messageScreen');};
+  E('backHome1').onclick=()=>showScreen('homeScreen');
+
+  let currentBrushWidth=4,currentBrushColor='#0c1d3d',currentBrushShape='round',currentSigStrokeWidth=6;
+  const canvas=E('canvas'),ctx=canvas.getContext('2d'); const messageCanvas=E('messageCanvas'),mctx=messageCanvas.getContext('2d'); let drawing=false,hasSig=false,last=null; let msgDrawing=false,hasMsgWriting=false,msgLast=null;
+  function setupCanvas(c,cx,hasContent){const r=c.getBoundingClientRect(); if(!r.width||!r.height)return; const d=window.devicePixelRatio||1; const old=hasContent?c.toDataURL():null; c.width=r.width*d; c.height=r.height*d; cx.setTransform(d,0,0,d,0,0); cx.lineWidth=(c===messageCanvas?currentBrushWidth:currentSigStrokeWidth); cx.lineCap=(c===messageCanvas?currentBrushShape:'round'); cx.lineJoin=(c===messageCanvas?currentBrushShape:'round'); cx.strokeStyle=(c===messageCanvas?currentBrushColor:'#0c1d3d'); if(old){const img=new Image(); img.onload=()=>cx.drawImage(img,0,0,r.width,r.height); img.src=old;}}
+  function resize(){setupCanvas(canvas,ctx,hasSig); setupCanvas(messageCanvas,mctx,hasMsgWriting);}
+  function pos(e){const r=canvas.getBoundingClientRect(); const p=e.touches?e.touches[0]:e; return{x:p.clientX-r.left,y:p.clientY-r.top};}
+  function start(e){e.preventDefault(); drawing=true; last=pos(e);}
+  function move(e){if(!drawing)return; e.preventDefault(); const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; hasSig=true;}
+  function end(){drawing=false; last=null;}
+  ['mousedown','touchstart'].forEach(x=>canvas.addEventListener(x,start,{passive:false})); ['mousemove','touchmove'].forEach(x=>canvas.addEventListener(x,move,{passive:false})); ['mouseup','mouseleave','touchend','touchcancel'].forEach(x=>canvas.addEventListener(x,end));
+  function msgPos(e){const r=messageCanvas.getBoundingClientRect(); const p=e.touches?e.touches[0]:e; return{x:p.clientX-r.left,y:p.clientY-r.top};}
+  function msgStart(e){e.preventDefault(); msgDrawing=true; msgLast=msgPos(e);}
+  function msgMove(e){if(!msgDrawing)return; e.preventDefault(); const p=msgPos(e); mctx.lineWidth=currentBrushWidth; mctx.lineCap=currentBrushShape; mctx.lineJoin=currentBrushShape; mctx.strokeStyle=currentBrushColor; mctx.beginPath(); mctx.moveTo(msgLast.x,msgLast.y); mctx.lineTo(p.x,p.y); mctx.stroke(); msgLast=p; hasMsgWriting=true;}
+  function msgEnd(){msgDrawing=false; msgLast=null;}
+  ['mousedown','touchstart'].forEach(x=>messageCanvas.addEventListener(x,msgStart,{passive:false})); ['mousemove','touchmove'].forEach(x=>messageCanvas.addEventListener(x,msgMove,{passive:false})); ['mouseup','mouseleave','touchend','touchcancel'].forEach(x=>messageCanvas.addEventListener(x,msgEnd));
+
+  window.addEventListener('resize',resize); setTimeout(resize,120);
+  E('clearSig').onclick=()=>{
+    const handwritingMode=String((window.currentSettings&&window.currentSettings.messageHandwritingEnabled)||'no')==='yes';
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    hasSig=false;
+    if(handwritingMode){
+      mctx.clearRect(0,0,messageCanvas.width,messageCanvas.height);
+      hasMsgWriting=false;
+      status('Handwritten message cleared.',true);
+    }else{
+      status('Signature cleared.',true);
+    }
+  };
+
+  let selectedProfileImage='';
+  let profileSessionId='';
+  let profileUploadListenerRef=null;
+  function setProfilePreview(dataUrl){
+    const box=E('profilePreview');
+    const st=E('profileUploadStatus');
+    if(box){
+      if(dataUrl){box.innerHTML='<img src="'+dataUrl+'" alt="Profile preview">';}
+      else{box.textContent='IMG';}
+    }
+    if(st) st.textContent=dataUrl?'Profile image received.':'Waiting for profile image...';
+  }
+  function makeProfileSessionId(){return 'profile_'+Date.now()+'_'+Math.random().toString(36).slice(2,10);}
+  function currentPageBaseUrl(){return location.href.split('#')[0].split('?')[0];}
+  function makeQrUrl(text){return 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(text);}
+  function setupProfileQrSession(s){
+    const enabled=String(s.kakaoProfileQrEnabled||'yes')==='yes';
+    const img=E('profileQrImg');
+    if(!enabled){
+      selectedProfileImage='';
+      setProfilePreview('');
+      if(profileUploadListenerRef){profileUploadListenerRef.off(); profileUploadListenerRef=null;}
+      return;
+    }
+    if(!profileSessionId) profileSessionId=makeProfileSessionId();
+    const uploadUrl=currentPageBaseUrl()+'?profileUpload='+encodeURIComponent(profileSessionId);
+    if(img) img.src=makeQrUrl(uploadUrl);
+    if(profileUploadListenerRef) profileUploadListenerRef.off();
+    profileUploadListenerRef=profileUploadsRef.child(profileSessionId);
+    profileUploadListenerRef.on('value',snap=>{
+      const v=snap.val()||{};
+      if(v.image){selectedProfileImage=v.image;setProfilePreview(v.image);}
+    });
+  }
+  async function imageFileToDataUrl(file){
+    if(!file)return '';
+    return new Promise((resolve,reject)=>{
+      const reader=new FileReader();
+      reader.onerror=()=>reject(reader.error||new Error('Could not read image file.'));
+      reader.onload=()=>{
+        const img=new Image();
+        img.onload=()=>{
+          const max=512;
+          const scale=Math.min(1,max/Math.max(img.width,img.height));
+          const w=Math.max(1,Math.round(img.width*scale));
+          const h=Math.max(1,Math.round(img.height*scale));
+          const c=document.createElement('canvas');
+          c.width=w;c.height=h;
+          const cx=c.getContext('2d');
+          cx.drawImage(img,0,0,w,h);
+          resolve(c.toDataURL('image/jpeg',0.86));
+        };
+        img.onerror=()=>reject(new Error('Selected file is not a valid image.'));
+        img.src=reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  function setupPhoneProfileUploadMode(){
+    const params=new URLSearchParams(location.search);
+    const sid=params.get('profileUpload');
+    if(!sid)return false;
+    const uploadScreen=E('profileUploadScreen');
+    if(uploadScreen) uploadScreen.style.display='block';
+    document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+    document.body.style.overflow='auto';
+    const cameraInput=E('phoneCameraFile');
+    const galleryInput=E('phoneGalleryFile');
+    const takeBtn=E('phoneTakePhotoBtn');
+    const galleryBtn=E('phoneChooseGalleryBtn');
+    const uploadBtn=E('phoneProfileUploadBtn');
+    const st=E('phoneProfileStatus');
+    const preview=E('phoneProfilePreview');
+    let phoneImage='';
+    async function handleProfileFile(file){
+      try{
+        phoneImage=await imageFileToDataUrl(file);
+        if(preview) preview.innerHTML=phoneImage?'<img src="'+phoneImage+'" alt="Profile preview">':'IMG';
+        if(st) st.textContent=phoneImage?'Image ready. Tap Upload Profile Image.':'';
+      }catch(e){if(st) st.textContent=e.message||String(e);}
+    }
+    if(takeBtn&&cameraInput){takeBtn.onclick=()=>cameraInput.click();cameraInput.addEventListener('change',()=>handleProfileFile(cameraInput.files&&cameraInput.files[0]));}
+    if(galleryBtn&&galleryInput){galleryBtn.onclick=()=>galleryInput.click();galleryInput.addEventListener('change',()=>handleProfileFile(galleryInput.files&&galleryInput.files[0]));}
+    if(uploadBtn){
+      uploadBtn.onclick=async()=>{
+        if(!phoneImage){alert('Please take a photo or choose one from your gallery first.');return;}
+        await profileUploadsRef.child(sid).set({image:phoneImage,createdAt:firebase.database.ServerValue.TIMESTAMP});
+        if(st) st.textContent='Uploaded. You may return to the visitor input screen.';
+      };
+    }
+    return true;
+  }
+  setupPhoneProfileUploadMode();
+
+  function setupBoothSelfieUploadMode(){
+    const params=new URLSearchParams(location.search);
+    if(params.get('boothSelfieUpload')!=='1')return false;
+    const uploadScreen=E('boothSelfieUploadScreen');
+    if(uploadScreen) uploadScreen.style.display='block';
+    document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+    document.body.style.overflow='auto';
+    const cameraInput=E('boothSelfieCameraFile');
+    const galleryInput=E('boothSelfieGalleryFile');
+    const takeBtn=E('boothSelfieTakePhotoBtn');
+    const galleryBtn=E('boothSelfieChooseGalleryBtn');
+    const uploadBtn=E('boothSelfieUploadBtn');
+    const st=E('boothSelfieStatus');
+    const preview=E('boothSelfiePreview');
+    let selfieImage='';
+    async function handleSelfieFile(file){
+      try{
+        selfieImage=await imageFileToDataUrl(file);
+        if(preview) preview.innerHTML=selfieImage?'<img src="'+selfieImage+'" alt="Booth selfie preview">':'PHOTO';
+        if(st) st.textContent=selfieImage?'Photo ready. Tap Upload Photo.':'';
+      }catch(e){if(st) st.textContent=e.message||String(e);}
+    }
+    if(takeBtn&&cameraInput){takeBtn.onclick=()=>cameraInput.click();cameraInput.addEventListener('change',()=>handleSelfieFile(cameraInput.files&&cameraInput.files[0]));}
+    if(galleryBtn&&galleryInput){galleryBtn.onclick=()=>galleryInput.click();galleryInput.addEventListener('change',()=>handleSelfieFile(galleryInput.files&&galleryInput.files[0]));}
+    if(uploadBtn){
+      uploadBtn.onclick=async()=>{
+        if(!selfieImage){alert('Please take a photo or choose one from your gallery first.');return;}
+        await boothSelfiesRef.push({image:selfieImage,createdAt:firebase.database.ServerValue.TIMESTAMP});
+        if(st) st.textContent='Uploaded. Your photo will appear on the screen.';
+        if(preview) preview.innerHTML='PHOTO';
+        selfieImage='';
+        if(cameraInput) cameraInput.value='';
+        if(galleryInput) galleryInput.value='';
+      };
+    }
+    return true;
+  }
+  setupBoothSelfieUploadMode();
+
+  let isSubmitting=false;
+
+  function makeEntryId(name,organization,message,signature){
+    const raw=[name,organization,message,signature].join('|');
+    let hash=0;
+    for(let i=0;i<raw.length;i++){
+      hash=((hash<<5)-hash)+raw.charCodeAt(i);
+      hash|=0;
+    }
+    return 'entry_'+Math.abs(hash)+'_'+String(raw.length);
+  }
+
+  E('submit').onclick=async()=>{
+    if(isSubmitting){
+      status('Message를 전송 중입니다. 잠시만 기다려 주세요.',true);
+      return;
+    }
+
+    const submitBtn=E('submit');
+
+    try{
+      const handwritingMode=String((window.currentSettings&&window.currentSettings.messageHandwritingEnabled)||'no')==='yes';
+      const typedMessage=E('message').value.trim();
+      const messageImage=handwritingMode&&hasMsgWriting?messageCanvas.toDataURL('image/png'):'';
+      const name=handwritingMode?'':E('name').value.trim();
+      const organization=handwritingMode?'':E('organization').value.trim();
+      const message=handwritingMode?'':typedMessage;
+      if(handwritingMode){
+        if(!hasMsgWriting){
+          status('Please write your handwritten message.',false);
+          alert('Please write your handwritten message.');
+          return;
+        }
+      }else if(!name||!organization||!typedMessage||!hasSig){
+        status('Name, organization, message, and signature are required.',false);
+        alert('Please enter your name, organization, message, and signature.');
+        return;
+      }
+
+      isSubmitting=true;
+      submitBtn.disabled=true;
+      submitBtn.style.opacity='0.55';
+      submitBtn.style.cursor='not-allowed';
+      submitBtn.textContent='Sending...';
+
+      status('Firebase로 전송 중입니다...',true);
+
+      const signature=handwritingMode?'':canvas.toDataURL('image/png');
+      const entryId=makeEntryId(name,organization,message+(messageImage||'')+(selectedProfileImage||''),signature);
+
+      const item={
+        id:entryId,
+        name,
+        organization,
+        message,
+        messageImage,
+        messageMode: handwritingMode?'handwriting':'text',
+        profileImage: selectedProfileImage || '',
+        signature,
+        createdAt:firebase.database.ServerValue.TIMESTAMP
+      };
+
+      await entriesRef.child(entryId).set(item);
+
+      status('Message가 성공적으로 저장되었습니다. Entry ID: '+entryId,true);
+      E('name').value='';
+      E('organization').value='';
+      E('message').value='';
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      mctx.clearRect(0,0,messageCanvas.width,messageCanvas.height);
+      hasSig=false; hasMsgWriting=false; selectedProfileImage=''; setProfilePreview(''); if(profileSessionId){profileUploadsRef.child(profileSessionId).remove().catch(()=>{}); profileSessionId=makeProfileSessionId(); setupProfileQrSession(window.currentSettings||DEFAULT_SETTINGS);}
+      E('ok').style.display='block';
+      setTimeout(()=>E('ok').style.display='none',2500);
+    }catch(e){
+      console.error(e);
+      status('Firebase 저장 오류: '+(e && e.message ? e.message : e),false);
+      alert('Firebase 저장 오류: '+(e && e.message ? e.message : e));
+    }finally{
+      isSubmitting=false;
+      submitBtn.disabled=false;
+      submitBtn.style.opacity='1';
+      submitBtn.style.cursor='pointer';
+      submitBtn.textContent=(window.currentSettings&&window.currentSettings.submitButtonText)||'Submit Message';
+    }
+  };
+
+  const fullBtns=[E('fullscreen'),E('homeFullscreen')].filter(Boolean); function updateFullButton(){fullBtns.forEach(btn=>btn.textContent=document.fullscreenElement?'Exit Full Screen':'Full Screen');} async function toggleFullscreen(){try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen(); else await document.exitFullscreen();}catch(e){alert('이 브라우저에서는 Full Screen 모드를 사용할 수 없습니다.');}} fullBtns.forEach(btn=>btn.onclick=toggleFullscreen); document.addEventListener('fullscreenchange',()=>{updateFullButton();setTimeout(resize,100);}); updateFullButton();
+  status('Firebase 연결 완료. Message를 제출할 수 있습니다.',true);
+})();
+</script></body></html>
